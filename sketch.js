@@ -8,7 +8,7 @@ let currentPlayer;
 let available = [];
 function setup() {
     createCanvas(400, 400);
-    frameRate(2);
+    frameRate(4);
     currentPlayer = floor(random(players.length));
     for (let j = 0; j < 3; j++) {
         for (let i = 0; i < 3; i++) {
@@ -49,7 +49,6 @@ function checkWinner() {
 function nextTurn() {
     let index = floor(random(available.length))
     let spot = available.splice(index,1)[0];
-    console.log(available)
     board[spot[0]][spot[1]] = players[currentPlayer];
     currentPlayer = 1-currentPlayer
 }
@@ -87,7 +86,14 @@ function draw() {
   result = checkWinner();
   if (result != null) {
       noLoop();
-      console.log("Winner is " + result)
+      console.log(result);
+      let resultP = createP('');
+      resultP.style('font-size', '32pt');
+      if (result == 'tie') {
+        resultP.html("Tie!")
+      } else {
+        resultP.html(`${result} wins!`);
+      }  } else {
+    nextTurn();
   }
-  nextTurn();
 }
