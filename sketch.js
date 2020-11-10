@@ -87,7 +87,7 @@ function draw() {
       let resultP = createP('');
       resultP.style('font-size', '32pt');
       if (result == 'tie') {
-        resultP.html("Tie!")
+        resultP.html("tie!")
       } else {
         resultP.html(`${result} wins!`);
       }  
@@ -105,21 +105,7 @@ function mousePressed() {
       if (board[i][j] == '') {
         board[i][j] = human;
         currentPlayer = ai;
-        nextTurn();
+        bestMove();
       }
     }
   }
-
-  function nextTurn() {
-    let available = [];
-    for (let i=0; i< 3 ; i++) {
-        for (let j=0; j< 3 ; j++) {
-            if (board[i][j] == '') {
-                available.push({i,j});
-            }
-        }
-    }
-    let move = random(available);
-    board[move.i][move.j] = ai;
-    currentPlayer = human
-}
