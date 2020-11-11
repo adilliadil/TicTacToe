@@ -3,18 +3,19 @@ let board = [
     ['','',''],
     ['','',''],
 ]
-let players = ['O','X'];
-let currentPlayer;
-let available = [];
+
+
+let w; // = width / 3;
+let h; // = height / 3;
+
+let ai = 'X';
+let human = 'O';
+let currentPlayer = human;
 function setup() {
     createCanvas(400, 400);
-    frameRate(2);
-    currentPlayer = floor(random(players.length));
-    for (let j = 0; j < 3; j++) {
-        for (let i = 0; i < 3; i++) {
-            available.push([i,j]);
-        }
-    }
+    frameRate(4);
+    w = width / 3;
+    h = height / 3;
 }
 
 function equal3(a,b,c) {
@@ -41,27 +42,22 @@ function checkWinner() {
         winner = board[1][1];
     }
 
-    if (winner == null && available.length == 0) {
-        return "Tie" 
+    let openSpots = 0;
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (board[i][j] == '') {
+          openSpots++;
+        }
+      }
+    }
+    if (winner == null && openSpots == 0) {
+        return "tie" 
     }
     return winner;
 }
-function nextTurn() {
-    let index = floor(random(available.length))
-    let spot = available.splice(index,1)[0];
-    console.log(available)
-    board[spot[0]][spot[1]] = players[currentPlayer];
-    currentPlayer = 1-currentPlayer
-}
-
-// function mousePressed() {
-//     nextTurn()
-// }
 
 function draw() {
     background(220);
-    let w = width / 3;
-    let h = height / 3;
     line(w,0, w, height)
     line(2*w,0, 2*w, height)
     line(0,h, width, h)
@@ -73,10 +69,10 @@ function draw() {
             let spot = board[i][j];
             textSize(32);
             strokeWeight(3);
-            if (spot == players[0]) {
+            if (spot == human) {
                 noFill()
                 ellipse(x,y,w/2)
-            } else if (spot == players[1]){
+            } else if (spot ==ai){
                 let xr = w/4
                 line(x-xr,y-xr,x+xr,y+xr)
                 line(x+xr,y-xr,x-xr,y+xr)
@@ -87,7 +83,29 @@ function draw() {
   result = checkWinner();
   if (result != null) {
       noLoop();
-      console.log("Winner is " + result)
-  }
-  nextTurn();
+      console.log(result);
+      let resultP = createP('');
+      resultP.style('font-size', '32pt');
+      if (result == 'tie') {
+        resultP.html("tie!")
+      } else {
+        resultP.html(`${result} wins!`);
+      }  
+    }
 }
+
+function mousePressed() {
+
+    console.log('mouse pressed', currentPlayer)
+    if (currentPlayer == human) {
+      // Human make turn
+      let i = floor(mouseX / w);
+      let j = floor(mouseY / h);
+      // If valid turn
+      if (board[i][j] == '') {
+        board[i][j] = human;
+        currentPlayer = ai;
+          bestMove();
+      }
+    }
+  }
